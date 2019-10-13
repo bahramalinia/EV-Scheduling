@@ -15,8 +15,8 @@ int main()
 	
 	//std::list<EV> evList = evGenerator(6); //use this method to generate n random EV profiles instead of sample input
 	CS aCS(10, 12, evList); //generate a charging station with capacity for 10 EVs, power capacity of 12 kWh and EVs given in evList	
-	
-	aCS.WFAIR();			//allocate resources by WFAIR algorithm
+	aCS.FOCS();
+	//aCS.WFAIR();			//allocate resources by WFAIR algorithm
 	std::cout << "Allocation finished" << std::endl << "----------Input:" << std::endl;
 	for (const auto& ev : aCS.getEvList())
 		std::cout << ev << std::endl;
@@ -24,21 +24,3 @@ int main()
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-//implement std::vector
-//implement std::string
-//overload operator << for your String class
-//overload operator >> for your class
-//overload operator new
-//usage of "placement new" (pp. 284)
-//write a program to show that lambda expressions are a shorthand for function objects (pp. 291)
-
-

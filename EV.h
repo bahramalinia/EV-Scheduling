@@ -36,6 +36,7 @@ public:
 	{
 		return (!isFullyCharged() && isPresent(t));
 	}
+
 	friend std::ostream& operator << (std::ostream& os, const EV& ev);
 	friend class CS;
 };

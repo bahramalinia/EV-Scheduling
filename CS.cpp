@@ -121,6 +121,66 @@ void CS::WFAIR()
 	}
 }
 
+void CS::FOCS(slot t)
+{
+	if (t > TL - 1 || t < 0)
+	{
+		throw std::string{ "invalid time slot" };
+	}
+
+	double yTotal = 0;				//remaining power capacity at slot t	
+	std::for_each(evList.begin(), evList.end(), [&yTotal, t](const EV& ev)
+	{
+		yTotal += ev.y[t];
+	});
+
+	std::list<EV*> curEvs;		//list of active EVs at time slot t	
+	for (auto& ev : evList)
+	{
+		if (ev.isActive(t) && ev.y[t] < ev.maxRate)
+		{
+			curEvs.insert(curEvs.end(), &ev);
+		}
+	}
+
+	auto comp = [](EV* e1, EV* e2) 
+	{
+		return e1->p > e2->p; 
+	};
+
+	curEvs.sort(comp); //descending sort based on value-demand ratio
+
+	for (auto ev : curEvs)
+	{
+		if (yTotal > pwCapacity - 0.01)
+		{
+			break;
+		}
+		auto it{ evList.begin() };
+		std::advance(it, ev->csID);
+		double delta = std::min(pwCapacity - yTotal, std::min(ev->remDemand, ev->maxRate - ev->y[t]));
+		it->y[t] += delta;
+
+		it->remDemand -= delta;
+		yTotal += delta;
+		Y[it->csID][t] += delta;
+
+		if (it->remDemand == 0)
+		{
+			it->isFullyCharged_ = true;
+		}
+	}
+}
+
+void CS::FOCS()
+{
+	for (slot t = 0; t < TL; ++t)
+	{
+		FOCS(t);
+		//std::cout << *this << std::endl; //uncommect to print status of allocations at the end of time slot t
+	}
+}
+
 //generate n random (feasible) EV profiles for testing
 std::list<EV> evGenerator(int n)
 {

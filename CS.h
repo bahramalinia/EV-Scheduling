@@ -32,6 +32,8 @@ public:
 	void WFAIR(slot t);
 	void WFAIR();
 	void WRAND(slot t);
+	void FOCS();
+	void FOCS(slot t);
 	std::list<EV> getEvList()
 	{
 		return evList;
